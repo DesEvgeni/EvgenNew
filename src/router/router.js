@@ -25,7 +25,13 @@ const routes = [
   },
   {
     path: "/articles",
+    name: "articles",
     component: () => import ("../pages/ArticlePage"),
+  },
+  {
+    path: "/offer_article/:id",
+    name: "offer_article",
+    component: () => import ("../pages/OfferArticle.vue"),
   },
   {
     path: "/submit_article",

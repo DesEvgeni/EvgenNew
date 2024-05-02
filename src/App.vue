@@ -42,5 +42,6 @@ export default {
 .page {
   padding: 20px;
   justify-self: center;
+  min-width: 80%;
 }
 </style>

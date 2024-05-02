@@ -2,6 +2,9 @@
   <div>
     <h1>Подача статьи</h1>
     <form>
+      <v-snackbar v-model="snackbar" :timeout="1500">
+        {{ snackbarMessage }}
+      </v-snackbar>
       <ol>
         <li>
           <h3>Требования к статье</h3>
@@ -88,7 +91,7 @@
         </li>
       </ol>
       <div class="btns__submit">
-        <v-btn class="mt-4 align-self-center btn-text" @click="handleFileUpload" color="blue">Отправить статью</v-btn>
+        <v-btn class="mt-4 align-self-center btn-text" @click="handleSubmit" color="blue">Отправить статью</v-btn>
       </div>
     </form>
   </div>
@@ -96,11 +99,15 @@
 
 <script>
 import AuthorDialog from "@/components/AuthorDialog.vue";
+import {createOfferArticle} from "@/api/userArticles";
+import router from "@/router/router";
 
 export default {
   name: "SubmitArticlePage",
   components: {AuthorDialog},
   data: () => ({
+    snackbar: false,
+    snackbarMessage: '',
     checkbox: false,
     checkbox2: false,
     iAuthor: false,
@@ -125,6 +132,17 @@ export default {
   mounted() {
   },
   methods: {
+    validateForm() {
+      if (!this.checkbox || !this.checkbox2) {
+        this.showSnackbar("Согласитесь к требованиям к статье!")
+        return false
+      }
+      return true
+    },
+    showSnackbar(message) {
+      this.snackbarMessage = message;
+      this.snackbar = true;
+    },
     closeDialog() {
       this.dialog = false;
     },
@@ -137,8 +155,22 @@ export default {
       const editedIndex = this.authors.indexOf(item)
       this.authors.splice(editedIndex, 1)
     },
-    handleFileUpload() {
-      console.log(this.files)
+    handleSubmit() {
+      if (this.validateForm()) {
+        const params = {
+          "annotation": this.annotation,
+          "authorIds": this.authors.map(author => author.id),
+          "name": this.nameArticle,
+          "udk": this.udk
+        }
+        createOfferArticle(params)
+            .then((res) =>
+                router.push({name: 'offer_article', params: {id: res.id}})
+            )
+            .catch((error) =>
+                this.showSnackbar(error.response.data.description)
+            )
+      }
     }
   },
 }
@@ -164,12 +196,14 @@ export default {
   align-items: center;
   justify-content: right;
 }
-.authors__list{
+
+.authors__list {
   display: flex;
   align-items: center;
   gap: 20px;
   flex-direction: row;
 }
+
 li::marker {
   font-size: 20px;
   font-weight: bold;
