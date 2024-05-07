@@ -56,6 +56,7 @@ export default {
                     "firstName": params[1],
                     "password": params[2],
                     "secondName": params[3],
+                    "patronymic": params[4],
                 });
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('refreshToken', response.data.refreshToken);
