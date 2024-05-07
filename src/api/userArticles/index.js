@@ -84,3 +84,13 @@ export async function submitVersion(id) {
         throw err;
     }
 }
+
+export async function deleteVersion(id) {
+    try {
+        const response = await $api.delete(`/offerArticles/${id}/versions`);
+        return response.data
+    } catch (err) {
+        console.log(err)
+        throw err;
+    }
+}

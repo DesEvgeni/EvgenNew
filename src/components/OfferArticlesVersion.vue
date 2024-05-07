@@ -107,6 +107,19 @@
             </template>
             <span>Отправить статью на проверку</span>
           </v-tooltip>
+          <v-tooltip bottom v-if="item.draft">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  color="red"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="deleteVersion()"
+              >mdi-close
+              </v-icon>
+            </template>
+            <span>Удалить черновик</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -115,7 +128,7 @@
 
 <script>
 import {debounce} from "@/service";
-import {editVersions, getVersions, submitVersion} from "@/api/userArticles";
+import {deleteVersion, editVersions, getVersions, submitVersion} from "@/api/userArticles";
 import {downloadFile, uploadFile} from "@/api/file";
 
 export default {
@@ -155,14 +168,16 @@ export default {
   },
   methods: {
     addNewVersion() {
-      this.versions.push({
-        created: "",
+      const params = {
         articleArchiveId: "",
         documentsArchiveId: "",
         comment: "",
-        answer: "",
-        draft: true
-      })
+      }
+      editVersions(this.$route.params.id, params).then(
+          () => {
+            this.getDataFromApi()
+          }
+      )
       console.log(this.versions)
       this.showDraftVersionButton = false
     },
@@ -187,6 +202,14 @@ export default {
         this.showDraftVersionButton = data.showDraftVersionButton
         this.loading = false
       })
+    },
+    deleteVersion() {
+      deleteVersion(this.$route.params.id)
+          .then(() => {
+            this.showSnackbar("Черновик удален")
+            this.getDataFromApi()
+          })
+          .catch((err) => this.showSnackbar(err.response.data.description))
     },
     submitVersion() {
       submitVersion(this.$route.params.id)
