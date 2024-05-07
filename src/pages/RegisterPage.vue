@@ -140,7 +140,7 @@ export default {
     },
 
     clear() {
-      this.login = '';
+      this.email = '';
       this.pass = '';
       this.secondName = '';
       this.firstName = '';
