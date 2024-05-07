@@ -1,89 +1,116 @@
 <template>
-  <v-card>
-    <v-snackbar v-model="snackbar" :timeout="1500">
-      {{ snackbarMessage }}
-    </v-snackbar>
-    <v-card-title>
-      Список версий
-      <v-spacer></v-spacer>
-    </v-card-title>
-    <v-data-table
-        :footer-props="{'items-per-page-options':[5, 10, 15, 20]}"
-        :options.sync="options"
-        :server-items-length="totalCount"
-        :loading="loading"
-        :headers="headers"
-        :items="versions"
-        item-key="id"
-    >
-      <!-- eslint-disable-next-line -->
-      <template v-slot:item.articleArchiveId="{ item }">
-        <div class="fileInput">
-          <v-file-input
-              v-if="item.draft"
-              :ref="'articleArchiveId' + item.id"
-              label="Выберите файл"
-              @change="uploadFile(item, 'articleArchiveId')"
-          ></v-file-input>
-          <v-icon
-              color="blue"
-              v-if="item.articleArchiveId"
-              @click="downloadFile(item,'articleArchiveId')"
-          >mdi-download
-          </v-icon>
-<!--          <div @click="downloadFile(item, 'articleArchiveId')">Загрузить</div>-->
-        </div>
-      </template>
-      <!-- eslint-disable-next-line -->
-      <template v-slot:item.documentsArchiveId="{ item }">
-        <div class="fileInput">
-          <v-file-input
-              v-if="item.draft"
-              :ref="'documentsArchiveId' + item.id"
-              label="Выберите файл"
-              @change="uploadFile(item, 'documentsArchiveId')"
-          ></v-file-input>
-          <v-icon
-              color="blue"
-              v-if="item.documentsArchiveId"
-              @click="downloadFile(item, 'documentsArchiveId')"
-          >mdi-download
-          </v-icon>
-<!--          <div @click="downloadFile(item, 'documentsArchiveId')">Загрузить</div>-->
-        </div>
-      </template>
-      <!-- eslint-disable-next-line -->
-      <template v-slot:item.comment="{ item }">
-        <v-text-field
-            v-if="item.draft"
-            v-model="item.comment"
-            @blur="handleBlur(item)"
-        ></v-text-field>
-        <v-text-field
-            v-if="!item.draft"
-            v-model="item.comment"
-            disabled
-        ></v-text-field>
-      </template>
-      <!-- eslint-disable-next-line -->
-      <template v-slot:item.actions="{ item }">
-        <v-tooltip bottom v-if="item.draft">
-          <template v-slot:activator="{ on, attrs }">
+  <div class="mt-4">
+    <div class="version__list">
+      <h4 class="mr-4">Список версий</h4>
+      <v-btn
+          color="primary"
+          text
+          class="mb-2"
+          @click="addNewVersion"
+          v-if="showDraftVersionButton"
+      >
+        Добавить новую версию
+      </v-btn>
+    </div>
+    <v-card>
+      <v-snackbar v-model="snackbar" :timeout="1500">
+        {{ snackbarMessage }}
+      </v-snackbar>
+      <v-data-table
+          :footer-props="{'items-per-page-options':[5, 10, 15, 20]}"
+          :options.sync="options"
+          :server-items-length="totalCount"
+          :loading="loading"
+          :headers="headers"
+          :items="versions"
+          item-key="id"
+      >
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.articleArchiveId="{ item }">
+          <div class="fileInput">
+            <v-file-input
+                v-if="item.draft"
+                :ref="'articleArchiveId' + item.id"
+                label="Выберите файл"
+                @change="uploadFile(item, 'articleArchiveId')"
+            ></v-file-input>
             <v-icon
-                color="green"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                @click="submitVersion(item.id)"
-            >
-              mdi-check
+                color="blue"
+                v-if="item.articleArchiveId"
+                @click="downloadFile(item,'articleArchiveId')"
+            >mdi-download
             </v-icon>
-          </template>
-          <span>Отправить статью на проверку</span>
-        </v-tooltip>
-      </template>
-    </v-data-table>
-  </v-card>
+            <!--          <div @click="downloadFile(item, 'articleArchiveId')">Загрузить</div>-->
+          </div>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.documentsArchiveId="{ item }">
+          <div class="fileInput">
+            <v-file-input
+                v-if="item.draft"
+                :ref="'documentsArchiveId' + item.id"
+                label="Выберите файл"
+                @change="uploadFile(item, 'documentsArchiveId')"
+            ></v-file-input>
+            <v-icon
+                color="blue"
+                v-if="item.documentsArchiveId"
+                @click="downloadFile(item, 'documentsArchiveId')"
+            >mdi-download
+            </v-icon>
+            <!--          <div @click="downloadFile(item, 'documentsArchiveId')">Загрузить</div>-->
+          </div>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.answer="{ item }">
+          <div class="fileInput">
+            <v-icon
+                v-if="item.answer?.documentId"
+                color="blue"
+                @click="downloadFile(item.answer, 'documentId')"
+            >mdi-download
+            </v-icon>
+            <!--          <div @click="downloadFile(item, 'documentsArchiveId')">Загрузить</div>-->
+            <v-text-field
+                v-if="item.answer?.comment"
+                disabled
+                v-model="item.answer.comment"
+            ></v-text-field>
+          </div>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.comment="{ item }">
+          <v-text-field
+              v-if="item.draft"
+              v-model="item.comment"
+              @blur="handleBlur(item)"
+          ></v-text-field>
+          <v-text-field
+              v-if="!item.draft"
+              v-model="item.comment"
+              disabled
+          ></v-text-field>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.actions="{ item }">
+          <v-tooltip bottom v-if="item.draft">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  color="green"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="submitVersion()"
+              >
+                mdi-check
+              </v-icon>
+            </template>
+            <span>Отправить статью на проверку</span>
+          </v-tooltip>
+        </template>
+      </v-data-table>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -114,7 +141,8 @@ export default {
       ],
       versions: [],
       dialog: false,
-      alert: ''
+      alert: '',
+      showDraftVersionButton: false
     }
   },
   watch: {
@@ -126,6 +154,18 @@ export default {
     },
   },
   methods: {
+    addNewVersion() {
+      this.versions.push({
+        created: "",
+        articleArchiveId: "",
+        documentsArchiveId: "",
+        comment: "",
+        answer: "",
+        draft: true
+      })
+      console.log(this.versions)
+      this.showDraftVersionButton = false
+    },
     showSnackbar(message) {
       this.snackbarMessage = message;
       this.snackbar = true;
@@ -144,26 +184,33 @@ export default {
       getVersions(this.$route.params.id, params).then(data => {
         this.versions = data.data
         this.totalCount = data.total
+        this.showDraftVersionButton = data.showDraftVersionButton
         this.loading = false
       })
     },
-    submitVersion(version) {
-      console.log(version)
-      submitVersion(version).then(() => this.showSnackbar("Статья успешно отправлена на проверку")).catch((err) => this.showSnackbar(err.response.data.description))
+    submitVersion() {
+      submitVersion(this.$route.params.id)
+          .then(() => {
+            this.showSnackbar("Статья успешно отправлена на проверку")
+            this.getDataFromApi()
+          })
+          .catch((err) => this.showSnackbar(err.response.data.description))
     },
     async uploadFile(item, column) {
       const file = await this.$refs[column + item.id].$refs.input.files[0];
       if (file) {
         await uploadFile(file).then((res) => {
           const params = item;
-          params[column] = res.fileId
-          editVersions(item.id, params)
+          params[column] = res.fileId;
+          console.log(params)
+          editVersions(this.$route.params.id, params).then(() => this.getDataFromApi()
+          )
         }).catch((err) => this.showSnackbar(err.response.data.description))
-        this.getDataFromApi();
+
       }
     },
     handleBlur(item) {
-      editVersions(item.id, item)
+      editVersions(this.$route.params.id, item)
     },
     async downloadFile(item, column) {
       const response = await downloadFile(item[column]);
@@ -174,7 +221,6 @@ export default {
       const a = document.createElement('a');
       a.href = url;
       let tempName = response.headers['content-disposition'].split(';')[1].split('filename=')[1]
-      tempName = atob(tempName);
       a.download = tempName;
       document.body.appendChild(a);
       a.click();
@@ -190,5 +236,12 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.version__list {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-direction: row;
 }
 </style>

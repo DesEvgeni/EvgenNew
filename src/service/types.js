@@ -1,13 +1,14 @@
 export const articlesTypes = {
-    "" : "---",
+    "": "---",
     "DRAFT": "Черновик",
     "CONSIDERATION": "На рассмотрении",
-    "ACCEPTED": "Принята к рассмотрению",
+    "ACCEPTED": "Принято к опубликованию",
     "PUBLISHED": "Опубликована",
-    "REJECTED": "Отклонена"
+    "REJECTED": "Отклонена",
+    "REVISION": "Требуется доработка"
 }
 
 export const orderTypes = {
     "ASC": "По возрастанию",
-    "DESC" : "По убыванию"
+    "DESC": "По убыванию"
 }

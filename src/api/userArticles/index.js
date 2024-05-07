@@ -54,6 +54,7 @@ export async function deleteArticle(id) {
 }
 
 export async function getVersions(id, params) {
+    console.log("id",id)
     try {
         const response = await $api.get(`/offerArticles/${id}/versions?page=${params.page}&size=${params.size}`);
         return response.data
@@ -64,6 +65,7 @@ export async function getVersions(id, params) {
 }
 
 export async function editVersions(id, params) {
+    console.log("id",id)
     try {
         const response = await $api.put(`/offerArticles/${id}/versions`, params);
         return response.data
