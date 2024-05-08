@@ -6,12 +6,6 @@
       <router-link to="/articles" class="nav-link" exact>Мои статьи</router-link>
       <router-link to="/submit_article" class="nav-link" exact>Подача статьи</router-link>
     </div>
-    <v-btn
-        class="btn-text align-self-center"
-        @click="logout"
-        color="blue">
-      Выйти
-    </v-btn>
   </div>
 </template>
 
@@ -28,22 +22,13 @@ export default {
       }
     });
   },
-  methods: {
-    logout() {
-      this.$store.dispatch("logout")
-      this.$router.push('/login');
-    }
-  }
+  methods: {}
 }
 </script>
 
 <style scoped>
 a {
   text-decoration: none !important;
-}
-
-.btn-text {
-  color: white;
 }
 
 .nav {
@@ -74,7 +59,7 @@ a {
 }
 
 .router-link-active {
-  background-color: #2196F3  !important;
+  background-color: #2196F3 !important;
   color: white !important;
 }
 </style>
