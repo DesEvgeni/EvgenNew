@@ -9,6 +9,7 @@
         :items="articles"
         item-key="id"
         disable-sort
+        @click:row="openArticle"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -24,16 +25,6 @@
               label="Сортировать по..."
           ></v-select>
         </v-toolbar>
-      </template>
-      <!-- eslint-disable-next-line -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-            small
-            @click="openArticle(item)"
-        >
-          mdi-pencil
-        </v-icon>
-<!--        <div @click="openArticle(item)">Редактировать</div>-->
       </template>
       <!-- eslint-disable-next-line -->
       <template v-slot:item.status="{ item }">
