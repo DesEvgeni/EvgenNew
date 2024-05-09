@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-export const API_URL = `http://jsms.fisbi.ru/api/v1`
+export const API_URL = `https://api.jsms.cloud.taynov.ru/api/v1`
 
 const $api = axios.create({
     baseURL: API_URL
