@@ -12,3 +12,8 @@ export const orderTypes = {
     "ASC": "По возрастанию",
     "DESC": "По убыванию"
 }
+
+export const roleTypes = {
+    "ADMIN": "Редактор",
+    "USER": "Автор",
+}

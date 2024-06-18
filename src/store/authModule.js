@@ -5,13 +5,13 @@ export default {
     state: {
         curUser: {
             isLogin: false,
-            canBeAdmin: false,
             email: "",
             firstName: "",
             id: 0,
             isConfirmed: false,
             patronymic: "",
-            secondName: ""
+            secondName: "",
+            canBeRoles: []
         }
     },
     mutations: {
